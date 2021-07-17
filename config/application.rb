@@ -33,3 +33,5 @@ module RailsEngine
     config.api_only = true
   end
 end
+
+config.factory_bot.definition_file_paths = ["custom/factories"] 
