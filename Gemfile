@@ -28,17 +28,17 @@ gem 'bootsnap', '>= 1.1.0', require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
-# creates visual format of schema 
+# creates visual format of schema
 gem 'active_designer'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'faker'
+  gem 'factory_bot_rails'
+  gem 'pry'
   gem 'rspec-rails'
   gem 'simplecov'
-  gem 'pry'
-  gem 'factory_bot_rails'
-  gem 'faker'
   gem 'shoulda-matchers', '~> 5.0'
 end
 

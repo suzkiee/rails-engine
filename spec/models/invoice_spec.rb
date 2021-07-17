@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Invoice do
-  describe 'validations' do 
+  describe 'validations' do
     it { should validate_presence_of(:status) }
   end
   
