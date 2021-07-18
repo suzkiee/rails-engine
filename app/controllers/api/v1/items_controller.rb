@@ -16,6 +16,19 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def update 
+    item = Item.find(params[:id])
+    if item.update(item_params)
+      render json: item 
+    end 
+
+    rescue ActiveRecord::RecordNotFound
+      render json: {
+        message: 'Not Found',
+        errors: ["Could not find item with id##{params[:id]}"]
+      }, status: :not_found
+  end
+
   private 
     def item_params
       params.permit(:name, :description, :unit_price, :merchant_id)
