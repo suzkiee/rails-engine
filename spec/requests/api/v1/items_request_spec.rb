@@ -8,7 +8,7 @@ RSpec.describe "Items API" do
   context 'items index' do
     it 'sends 20 items max' do
       create_list(:mock_item, 25, merchant: @merchant)
- 
+      
       get '/api/v1/items'
 
       expect(response).to be_successful
@@ -30,6 +30,28 @@ RSpec.describe "Items API" do
         expect(item).to have_key(:description)
         expect(item[:description]).to be_an(String)
       end
+    end
+  end
+
+  context 'items show' do
+    it 'finds one item by id' do
+      id = create(:mock_item, merchant: @merchant).id
+      get "/api/v1/items/#{id}"
+      item = JSON.parse(response.body, symbolize_names: true)
+      require 'pry'; binding.pry
+  
+      expect(response).to be_successful
+      expect(item).to have_key(:id)
+      expect(item[:id]).to be_an(Integer)
+
+      expect(item).to have_key(:merchant_id)
+      expect(item[:merchant_id]).to be_an(Integer)
+
+      expect(item).to have_key(:name)
+      expect(item[:name]).to be_an(String)
+
+      expect(item).to have_key(:description)
+      expect(item[:description]).to be_an(String)
     end
   end
 
