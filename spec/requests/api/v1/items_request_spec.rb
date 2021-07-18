@@ -124,7 +124,7 @@ RSpec.describe "Items API" do
   end
 
   context 'items delete' do
-    it 'happy path: can destroy and item' do
+    it 'happy path: can destroy an item' do
       item = create(:mock_item, merchant: @merchant)
 
       expect{ delete "/api/v1/items/#{item.id}" }.to change(Item, :count).by(-1)
