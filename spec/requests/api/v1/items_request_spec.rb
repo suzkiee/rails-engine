@@ -30,21 +30,24 @@ RSpec.describe "Items API" do
     end
 
     context 'items create' do
-      it "can create a new item" do 
-        item_params = ({
-          name: Faker::Commerce.product_name,
-          description: Faker::Hipster.paragraph,
-          unit_price: Faker::Number.within(range: 1..1000)
-        })
-        headers = {"CONTENT_TYPE" => "application/json"}
+      it "can create a new item" do
+        merchant = create(:mock_merchant)
 
-        post "/api/v1/items", headers: headers, params: JSON.generate(book: item_params)
-        new_item = Item.last
+        post "/api/v1/items", params: {
+          name: 'test',
+          description: 'test description',
+          unit_price: 12, 
+          merchant_id: merchant.id
+        }
+
+        new_item = JSON.parse(response.body, symbolize_names: true)
+        item = Item.find(new_item[:id])
 
         expect(response).to be_successful
-        expect(new_item.name).to eq(item_params[:name])
-        expect(new_item.description).to eq(item_params[:description])
-        expect(new_item.unit_price).to eq(item_params[:unit_price])
+        expect(new_item[:name]).to eq(item[:name])
+        expect(new_item[:description]).to eq(item[:description])
+        expect(new_item[:unit_price]).to eq(item[:unit_price])
+        expect(new_item[:merchant_id]).to eq(merchant.id)
       end
     end
   end
