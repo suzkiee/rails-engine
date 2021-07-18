@@ -33,32 +33,6 @@ RSpec.describe "Items API" do
     end
   end
 
-  context 'items show' do
-    before(:all) { create_list(:mock_item, 10, merchant: @merchant) }
-
-    xit 'finds one item by id' do
-      item = Item.first
-      get "/api/v1/items/#{item.id}"
-      expect(response).to be_successful
-      require 'pry'; binding.pry
-      item = JSON.parse(response.body, symbolize_names: true)
-      require 'pry'; binding.pry
-  
-      expect(response).to be_successful
-      expect(item).to have_key(:id)
-      expect(item[:id]).to be_an(Integer)
-
-      expect(item).to have_key(:merchant_id)
-      expect(item[:merchant_id]).to be_an(Integer)
-
-      expect(item).to have_key(:name)
-      expect(item[:name]).to be_an(String)
-
-      expect(item).to have_key(:description)
-      expect(item[:description]).to be_an(String)
-    end
-  end
-
   context 'items create' do
     it "happy path: can create a new item" do
       post "/api/v1/items", params: {
@@ -136,6 +110,33 @@ RSpec.describe "Items API" do
       item_id = 0 
       
       expect{ delete "/api/v1/items/#{item_id}" }.to change(Item, :count).by(0)
+    end
+  end
+
+  context 'item show' do
+    it 'happy path: can find a single item' do
+      create_list(:mock_item, 5, merchant: @merchant)
+      item = Item.first
+      get "/api/v1/items/#{item.id}"
+      
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(body[:id]).to eq(item.id)
+      expect(body[:merchant_id]).to eq(item.merchant_id)
+      expect(body[:name]).to eq(item.name)
+      expect(body[:description]).to eq(item.description)
+      expect(body[:unit_price]).to eq(item.unit_price)
+    end
+
+    it 'sad path: cannot find the item' do
+      id = 0
+      get "/api/v1/items/#{id}"
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(body[:message]).to eq 'Not Found'
+      expect(body[:errors]).to include 'Could not find item with id#0'
+      expect(response.status).to eq(404)
     end
   end
 end
