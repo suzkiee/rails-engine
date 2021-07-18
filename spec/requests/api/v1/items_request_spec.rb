@@ -34,9 +34,13 @@ RSpec.describe "Items API" do
   end
 
   context 'items show' do
-    it 'finds one item by id' do
-      id = create(:mock_item, merchant: @merchant).id
-      get "/api/v1/items/#{id}"
+    before(:all) { create_list(:mock_item, 10, merchant: @merchant) }
+
+    xit 'finds one item by id' do
+      item = Item.first
+      get "/api/v1/items/#{item.id}"
+      expect(response).to be_successful
+      require 'pry'; binding.pry
       item = JSON.parse(response.body, symbolize_names: true)
       require 'pry'; binding.pry
   
@@ -90,7 +94,7 @@ RSpec.describe "Items API" do
     end
   end
 
-  context 'items update' do
+  context 'items edit' do
     it 'happy path: can update an existing item' do
       id = create(:mock_item, merchant: @merchant).id
       previous = Item.last.name
@@ -116,6 +120,22 @@ RSpec.describe "Items API" do
       expect(body[:message]).to eq 'Not Found'
       expect(body[:errors]).to include 'Could not find item with id#0'
       expect(response.status).to eq(404)
+    end
+  end
+
+  context 'items delete' do
+    it 'happy path: can destroy and item' do
+      item = create(:mock_item, merchant: @merchant)
+
+      expect{ delete "/api/v1/items/#{item.id}" }.to change(Item, :count).by(-1)
+      expect(response).to be_successful
+      expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'sad path: cannot find item to destroy' do
+      item_id = 0 
+      
+      expect{ delete "/api/v1/items/#{item_id}" }.to change(Item, :count).by(0)
     end
   end
 end
