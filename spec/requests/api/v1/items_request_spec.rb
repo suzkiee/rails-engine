@@ -75,11 +75,25 @@ RSpec.describe "Items API" do
       patch "/api/v1/items/#{id}", params: {
         name: "updated"
       }
-
+    
       updated = Item.find_by(id: id)
+      
       expect(response).to be_successful
       expect(updated.name).to_not eq(previous)
       expect(updated.name).to eq("updated")
+    end
+
+    it 'sad path: cannot update item that cannot be found' do 
+      id = 0
+      patch "/api/v1/items/#{id}", params: {
+        name: "updated"
+      }
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(body[:message]).to eq 'Not Found'
+      expect(body[:errors]).to include 'Could not find item with id#0'
+      expect(response.status).to eq(404)
     end
   end
 end
