@@ -14,22 +14,8 @@ RSpec.describe "Items API" do
       expect(response).to be_successful
 
       items = JSON.parse(response.body, symbolize_names: true)
-      
-      expect(items.size).to eq(20)
-      
-      items.each do |item|
-        expect(item).to have_key(:id)
-        expect(item[:id]).to be_an(Integer)
 
-        expect(item).to have_key(:merchant_id)
-        expect(item[:merchant_id]).to be_an(Integer)
-
-        expect(item).to have_key(:name)
-        expect(item[:name]).to be_an(String)
-
-        expect(item).to have_key(:description)
-        expect(item[:description]).to be_an(String)
-      end
+      expect(items[:data].size).to eq(20)
     end
   end
 
@@ -43,13 +29,13 @@ RSpec.describe "Items API" do
       }
 
       new_item = JSON.parse(response.body, symbolize_names: true)
-      item = Item.find(new_item[:id])
+      item = Item.find(new_item[:data][:id])
 
       expect(response).to be_successful
-      expect(new_item[:name]).to eq(item[:name])
-      expect(new_item[:description]).to eq(item[:description])
-      expect(new_item[:unit_price]).to eq(item[:unit_price])
-      expect(new_item[:merchant_id]).to eq(@merchant.id)
+      expect(new_item[:data][:attributes][:name]).to eq(item.name)
+      expect(new_item[:data][:attributes][:description]).to eq(item.description)
+      expect(new_item[:data][:attributes][:unit_price]).to eq(item.unit_price)
+      expect(new_item[:data][:attributes][:merchant_id]).to eq(item.merchant_id)
     end
 
     it "sad path: can't create item without all params" do
@@ -122,11 +108,11 @@ RSpec.describe "Items API" do
       body = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
-      expect(body[:id]).to eq(item.id)
-      expect(body[:merchant_id]).to eq(item.merchant_id)
-      expect(body[:name]).to eq(item.name)
-      expect(body[:description]).to eq(item.description)
-      expect(body[:unit_price]).to eq(item.unit_price)
+      expect(body[:data][:id]).to eq("#{item.id}")
+      expect(body[:data][:attributes][:merchant_id]).to eq(item.merchant_id)
+      expect(body[:data][:attributes][:name]).to eq(item.name)
+      expect(body[:data][:attributes][:description]).to eq(item.description)
+      expect(body[:data][:attributes][:unit_price]).to eq(item.unit_price)
     end
 
     it 'sad path: cannot find the item' do

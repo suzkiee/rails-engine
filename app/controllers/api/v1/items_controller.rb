@@ -2,12 +2,14 @@ class Api::V1::ItemsController < ApplicationController
   ITEMS_PER_PAGE = 20
 
   def index
-    render json: Item.offset(0).limit(ITEMS_PER_PAGE)
+    page = params.fetch(:page, 1).to_i
+    items = Item.offset(page * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+    render json: ItemSerializer.new(items)
   end
 
   def show
     item = Item.find(params[:id])
-    render json: item 
+    render json: ItemSerializer.new(item), status: 200
 
     rescue ActiveRecord::RecordNotFound
       render json: {
@@ -20,7 +22,7 @@ class Api::V1::ItemsController < ApplicationController
     item = Item.new(item_params)
 
     if item.save 
-      render json: item, status: :created
+      render json: ItemSerializer.new(item), status: 201, status: :created
     else 
       render json: {
         message: 'Invalid',
@@ -33,7 +35,7 @@ class Api::V1::ItemsController < ApplicationController
     item = Item.find(params[:id])
     
     if item.update(item_params)
-      render json: item 
+      render json: ItemSerializer.new(@item), status: 201
     end 
 
     rescue ActiveRecord::RecordNotFound
