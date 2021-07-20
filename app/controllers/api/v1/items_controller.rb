@@ -3,7 +3,7 @@ class Api::V1::ItemsController < ApplicationController
 
   def index
     page = params.fetch(:page, 1).to_i
-    items = Item.offset(page * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+    items = Item.offset((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
     render json: ItemSerializer.new(items)
   end
 
