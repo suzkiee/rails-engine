@@ -1,9 +1,19 @@
 class Api::V1::ItemsController < ApplicationController
-  ITEMS_PER_PAGE = 20
 
   def index
-    page = params.fetch(:page, 1).to_i
-    items = Item.offset((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+    if params[:page].nil?
+      page = params.fetch(:page, 1).to_i
+    else 
+      page = params[:page].to_i
+    end
+
+    if params[:per_page].nil? 
+      limit = 20
+    else 
+      limit = params[:per_page].to_i
+    end
+
+    items = Item.offset((page-1) * limit).limit(limit)
     render json: ItemSerializer.new(items)
   end
 
