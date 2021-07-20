@@ -3,11 +3,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :items, except: [:new, :edit] do
-        resources :merchants, only: [:index]
+        resources :merchants, module: 'items', only: [:index]
       end
-      
+
       resources :merchants, only: [:index, :show] do
-        resources :items, only: [:index] 
+        resources :items, module: 'merchants', only: [:index]
       end
     end
   end
