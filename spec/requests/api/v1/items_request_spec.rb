@@ -6,16 +6,44 @@ RSpec.describe "Items API" do
   end
 
   context 'items index' do
-    it 'sends 20 items max' do
+    before(:each) do
       create_list(:mock_item, 25, merchant: @merchant)
-      
+    end
+
+    it 'sends 20 items max by default' do
       get '/api/v1/items'
+      
+      body = JSON.parse(response.body, symbolize_names: true)
 
       expect(response).to be_successful
+      expect(body[:data].size).to eq(20)
+    end
 
-      items = JSON.parse(response.body, symbolize_names: true)
+    it 'takes limit param and returns corresponding number of items' do
+      get '/api/v1/items', params: { per_page: 50 }
 
-      expect(items[:data].size).to eq(20)
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(body[:data].size).to eq(50)
+    end
+
+    it 'takes page params' do
+      get '/api/v1/items', params: { page: 2 }
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(body[:data].size).to eq(20)
+    end
+
+    it 'takes both page and limit params' do
+      get '/api/v1/items', params: { per_page: 33, page: 2 }
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(body[:data].size).to eq(33)
     end
   end
 
