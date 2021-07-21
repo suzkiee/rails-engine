@@ -33,7 +33,7 @@ class Api::V1::ItemsController < ApplicationController
     item = Item.new(item_params)
 
     if item.save 
-      render json: ItemSerializer.new(item), status: 201, status: :created
+      render json: ItemSerializer.new(item), status: 201
     else 
       render json: {
         message: 'Invalid',
