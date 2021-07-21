@@ -44,7 +44,10 @@ RSpec.describe Invoice do
         transaction_2 = create(:mock_transaction, invoice: invoice_2, result: 'success')
         transaction_3 = create(:mock_transaction, invoice: invoice_3, result: 'success')
         
-        expect(Invoice.potential_revenue).to eq(259411.88)
+        first = Invoice.potential_revenue.first
+
+        expect(first.id).to eq(invoice_1.id)
+        expect(first.revenue).to eq(1800.0)
       end
     end
   end
