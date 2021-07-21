@@ -11,15 +11,17 @@ class Merchant < ApplicationRecord
     invoices
     .joins(:transactions)
     .joins(:invoice_items)
-    .where("transactions.result = 'success' and invoices.status = 'shipped'")
+    .where("transactions.result = 'success' AND invoices.status = 'shipped'")
     .sum('invoice_items.quantity * invoice_items.unit_price')
-    
-    # invoices
-    # .joins(:transactions)
-    # .joins(:invoice_items)
-    # .where("invoices.status = 'shipped' and transactions.result = 'success'")
-    # .select("sum(invoice_items.quantity * invoice_items.unit_price) as revenue,
-    #                     items.merchant_id as merchant_id")
-    # .group('items.merchant_id')
+  end
+
+  def self.most_revenue
+    joins(:transactions, :invoice_items)
+    .select("merchants.name as name,
+             merchants.id as id,
+             sum(invoice_items.quantity * invoice_items.unit_price) as revenue")
+    .group(:name, :id)
+    .order(revenue: :desc)
+    .where("invoices.status = ? and transactions.result = ?", 'shipped', 'success')
   end
 end
