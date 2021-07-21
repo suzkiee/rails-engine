@@ -7,7 +7,7 @@ RSpec.describe "Items API" do
 
   context 'items index' do
     before(:each) do
-      create_list(:mock_item, 25, merchant: @merchant)
+      create_list(:mock_item, 500, merchant: @merchant)
     end
 
     it 'sends 20 items max by default' do
