@@ -5,7 +5,7 @@ RSpec.describe "Merchants API" do
     @merchant = create(:mock_merchant)
   end
 
-  context 'merchant index' do
+  context 'merchants index' do
     before(:each) do
       create_list(:mock_merchant, 500)
     end
@@ -48,7 +48,7 @@ RSpec.describe "Merchants API" do
     end
   end
 
-  context 'merchant show' do
+  context 'merchants show' do
     it 'happy path: can find a single merchant' do
       create_list(:mock_merchant, 25)
       merchant = Merchant.first
@@ -70,6 +70,20 @@ RSpec.describe "Merchants API" do
       expect(body[:message]).to eq 'Not Found'
       expect(body[:errors]).to include 'Could not find merchant with id#0'
       expect(response.status).to eq(404)
+    end
+  end
+
+  context 'merchants find' do
+    it 'happy path: can find merchant by search ' do
+      merchants = create_list(:mock_merchant, 25)
+      merchant = create(:mock_merchant, name:"Turing")
+      get "/api/v1/merchants/find?name=ring"
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(body[:data][:id]).to eq("#{merchant.id}")
+      expect(body[:data][:type]).to eq("merchant")
+      expect(body[:data][:attributes][:name]).to eq(merchant.name)
     end
   end
 end
