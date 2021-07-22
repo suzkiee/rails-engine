@@ -7,12 +7,14 @@ class Merchant < ApplicationRecord
   has_many :transactions, through: :invoices
   has_many :customers, through: :invoices
 
-  def revenue
-    invoices
-    .joins(:transactions)
+  def self.merchant_revenue(merchant_id)
+    self.joins(:transactions)
     .joins(:invoice_items)
-    .where("transactions.result = 'success' AND invoices.status = 'shipped'")
-    .sum('invoice_items.quantity * invoice_items.unit_price')
+    .joins(:invoices)
+    .select("merchants.id as id,
+            merchants.name as name, sum(invoice_items.quantity * invoice_items.unit_price) as revenue")
+    .where("merchants.id = ?", "#{merchant_id}")
+    .group(:name, :id)
   end
 
   def self.most_revenue
@@ -26,6 +28,6 @@ class Merchant < ApplicationRecord
   end
 
   def self.search(search_params)
-    where("name ILIKE ?", "%#{search_params}%").first
+    where("name ILIKE ?", "%#{search_params}%")
   end
 end
