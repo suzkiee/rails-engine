@@ -12,7 +12,7 @@ RSpec.describe Merchant, type: :model do
     it { should have_many(:transactions) }
   end
   
-  describe 'instance methods' do
+  describe 'class methods' do
     describe "::most_revenue" do
       it 'returns merchant with most revenue' do
         merchant_1 = create(:mock_merchant)
