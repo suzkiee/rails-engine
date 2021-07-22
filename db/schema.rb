@@ -34,8 +34,8 @@ ActiveRecord::Schema.define(version: 2021_07_17_194554) do
   end
 
   create_table "invoices", force: :cascade do |t|
-    t.bigint "merchant_id"
     t.bigint "customer_id"
+    t.bigint "merchant_id"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -44,10 +44,10 @@ ActiveRecord::Schema.define(version: 2021_07_17_194554) do
   end
 
   create_table "items", force: :cascade do |t|
-    t.bigint "merchant_id"
     t.string "name"
     t.string "description"
     t.float "unit_price"
+    t.bigint "merchant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["merchant_id"], name: "index_items_on_merchant_id"

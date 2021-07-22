@@ -1,14 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe "Items API" do
+RSpec.describe "Merchants API" do
   before(:all) do
     @merchant = create(:mock_merchant)
   end
 
   context 'merchant index' do
-    it 'sends 20 merchants max by default' do
-      create_list(:mock_merchant, 25)
-      
+    before(:each) do
+      create_list(:mock_merchant, 500)
+    end
+
+    it 'sends 20 merchants max by default' do    
       get '/api/v1/merchants'
 
       expect(response).to be_successful
@@ -22,7 +24,7 @@ RSpec.describe "Items API" do
       get '/api/v1/merchants', params: { per_page: 50 }
 
       body = JSON.parse(response.body, symbolize_names: true)
-
+    
       expect(response).to be_successful
       expect(body[:data].size).to eq(50)
     end
@@ -53,11 +55,11 @@ RSpec.describe "Items API" do
       get "/api/v1/merchants/#{merchant.id}"
       
       body = JSON.parse(response.body, symbolize_names: true)
-
+      
       expect(response).to be_successful
       expect(body[:data][:id]).to eq("#{merchant.id}")
       expect(body[:data][:type]).to eq("merchant")
-      expect(body[:data][:attributes][:name]).to eq("Sawyer B. Hind")
+      expect(body[:data][:attributes][:name]).to eq(merchant.name)
     end
 
     it 'sad path: cannot find the merchant' do

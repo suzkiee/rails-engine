@@ -1,6 +1,7 @@
 class Api::V1::ItemsController < ApplicationController
 
   def index
+    # fetch it and then check if it's nil
     if params[:page].nil?
       page = params.fetch(:page, 1).to_i
     else 
@@ -32,7 +33,7 @@ class Api::V1::ItemsController < ApplicationController
     item = Item.new(item_params)
 
     if item.save 
-      render json: ItemSerializer.new(item), status: 201, status: :created
+      render json: ItemSerializer.new(item), status: 201
     else 
       render json: {
         message: 'Invalid',
@@ -45,7 +46,7 @@ class Api::V1::ItemsController < ApplicationController
     item = Item.find(params[:id])
     
     if item.update(item_params)
-      render json: ItemSerializer.new(@item), status: 201
+      render json: ItemSerializer.new(item), status: 201
     end 
 
     rescue ActiveRecord::RecordNotFound
