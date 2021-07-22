@@ -51,6 +51,15 @@ RSpec.describe Merchant, type: :model do
         expect(last.revenue).to eq(merchant_1.revenue)
       end
     end
+
+    describe '::search' do
+      it 'returns one merchant based on search query' do
+        merchants = create_list(:mock_merchant, 25)
+        merchant = create(:mock_merchant, name: "Turing")
+
+        expect(Merchant.search("ring")).to eq(merchant)
+      end
+    end
   end
 
   describe 'instance methods' do

@@ -7,7 +7,7 @@ class Item < ApplicationRecord
   has_many :invoice_items, dependent: :destroy
   has_many :invoices, through: :invoice_items
   has_many :transactions, through: :invoices
-
+  
   def self.rank_most_revenue
     all
     .joins(:invoices, :transactions, :invoice_items)
@@ -17,4 +17,9 @@ class Item < ApplicationRecord
     .order(revenue: :desc)
     .group('items.id')
   end
+
+  private 
+    def self.search(search_params)
+      where("name ILIKE ?", "%#{search_params}%")
+    end
 end
