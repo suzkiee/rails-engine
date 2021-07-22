@@ -77,6 +77,7 @@ RSpec.describe "Merchants API" do
     it 'happy path: can find merchant by search ' do
       merchants = create_list(:mock_merchant, 25)
       merchant = create(:mock_merchant, name:"Turing")
+       
       get "/api/v1/merchants/find?name=ring"
 
       body = JSON.parse(response.body, symbolize_names: true)
@@ -84,6 +85,14 @@ RSpec.describe "Merchants API" do
       expect(body[:data][:id]).to eq("#{merchant.id}")
       expect(body[:data][:type]).to eq("merchant")
       expect(body[:data][:attributes][:name]).to eq(merchant.name)
+    end
+
+    it 'sad path: returns empty hash if no merchant is found' do       
+      get "/api/v1/merchants/find?name=ring"
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(body[:data]).to eq({})
     end
   end
 end
