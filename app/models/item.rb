@@ -6,4 +6,15 @@ class Item < ApplicationRecord
   belongs_to :merchant
   has_many :invoice_items, dependent: :destroy
   has_many :invoices, through: :invoice_items
+  has_many :transactions, through: :invoices
+
+  def self.rank_most_revenue
+    all
+    .joins(:invoices, :transactions, :invoice_items)
+    .where("invoices.status = ? and transactions.result = ?", 'shipped', 'success')
+    .select("items.*,
+            sum(invoice_items.quantity * invoice_items.unit_price) as revenue")
+    .order(revenue: :desc)
+    .group('items.id')
+  end
 end
