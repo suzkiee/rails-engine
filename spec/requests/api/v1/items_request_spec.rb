@@ -153,4 +153,35 @@ RSpec.describe "Items API" do
       expect(response.status).to eq(404)
     end
   end
+
+  context 'items find all' do
+    it 'happy path: finds all items by name query' do
+      create_list(:mock_item, 5, merchant: @merchant)
+      item = create(:mock_item, merchant: @merchant, name: "Turing")
+      item_2 = create(:mock_item, merchant: @merchant, name: "Ring Toss")
+      get "/api/v1/items/find_all?name=ring"
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response).to be_successful
+      expect(body[:data].first[:id]).to eq("#{item.id}")
+      expect(body[:data].first[:attributes][:merchant_id]).to eq(item.merchant_id)
+      expect(body[:data].first[:attributes][:name]).to eq(item.name)
+      expect(body[:data].first[:attributes][:description]).to eq(item.description)
+      expect(body[:data].first[:attributes][:unit_price]).to eq(item.unit_price)
+      expect(body[:data].last[:id]).to eq("#{item_2.id}")
+      expect(body[:data].last[:attributes][:merchant_id]).to eq(item_2.merchant_id)
+      expect(body[:data].last[:attributes][:name]).to eq(item_2.name)
+      expect(body[:data].last[:attributes][:description]).to eq(item_2.description)
+      expect(body[:data].last[:attributes][:unit_price]).to eq(item_2.unit_price)
+    end
+
+    it 'sad path: returns empty array if no items match query' do
+      get "/api/v1/items/find_all?name=ring"
+
+      body = JSON.parse(response.body, symbolize_names: true)
+
+      expect(body[:data]).to eq([])
+    end
+  end
 end
