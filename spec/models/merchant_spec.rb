@@ -52,12 +52,12 @@ RSpec.describe Merchant, type: :model do
       end
     end
 
-    describe '::find' do
+    describe '::search' do
       it 'returns one merchant based on search query' do
         merchants = create_list(:mock_merchant, 25)
         merchant = create(:mock_merchant, name: "Turing")
 
-        expect(Merchant.find("ring")).to eq(merchant)
+        expect(Merchant.search("ring")).to eq(merchant)
       end
     end
   end
