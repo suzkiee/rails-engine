@@ -59,11 +59,20 @@ class Api::V1::ItemsController < ApplicationController
   def destroy
     render json: Item.delete(params[:id])
 
-  rescue ActiveRecord::RecordNotFound
-    render json: {
-      message: 'Not Found',
-      errors: ["Could not find item with id##{params[:id]}"]
-    }, status: :not_found
+    rescue ActiveRecord::RecordNotFound
+      render json: {
+        message: 'Not Found',
+        errors: ["Could not find item with id##{params[:id]}"]
+      }, status: :not_found
+  end
+
+  def find_all
+    items = Item.search(params[:name])
+    if items.empty?
+      render json: { data: [] }
+    else 
+      render json: ItemSerializer.new(items)
+    end
   end
 
   private 
