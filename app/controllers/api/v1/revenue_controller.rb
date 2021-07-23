@@ -11,12 +11,17 @@ class Api::V1::RevenueController < ApplicationController
   end
 
   def merchant_total_revenue
-    merchant = Merchant.revenue(params[:id])
+    merchant = Merchant.merchant_revenue(params[:id])
     render json: MerchantRevenueSerializer.new(merchant)
   end
 
   def merchants_most_revenue
     merchants = Merchant.most_revenue
-    render json: Merchants
+    render json: MerchantsRevenueSerializer.new(merchants)
+  end
+
+  def items_revenue_ranked 
+    items = Items.rank_most_revenue 
+    render json: ItemsRevenueSerializer.new(items)
   end
 end

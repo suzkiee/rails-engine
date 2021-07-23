@@ -81,10 +81,10 @@ RSpec.describe "Merchants API" do
       get "/api/v1/merchants/find?name=ring"
 
       body = JSON.parse(response.body, symbolize_names: true)
-
-      expect(body[:data][:id]).to eq("#{merchant.id}")
-      expect(body[:data][:type]).to eq("merchant")
-      expect(body[:data][:attributes][:name]).to eq(merchant.name)
+      
+      expect(body[:data].first[:id]).to eq("#{merchant.id}")
+      expect(body[:data].first[:type]).to eq("merchant")
+      expect(body[:data].first[:attributes][:name]).to eq(merchant.name)
     end
 
     it 'sad path: returns empty array if no merchant is found' do       

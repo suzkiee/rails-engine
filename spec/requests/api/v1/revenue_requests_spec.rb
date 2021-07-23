@@ -95,31 +95,33 @@ RSpec.describe "Revenue API" do
   
   context 'revenue merchant total revenue' do
     it 'happy path: returns total revenue of given merchant' do
-      merchant = Merchant.revenue(@merchant.id)
+      merchant = Merchant.merchant_revenue(@merchant.id).first
 
       get "/api/v1/revenue/merchants/#{@merchant.id}"
 
       body = JSON.parse(response.body, symbolize_names: true)
 
       expect(body[:data].first[:id]).to eq("#{@merchant.id}")
-      expect(body[:data].first[:type]).to eq("merchant_name_revenue")
-      expect(body[:data].first[:attributes][:name]).to eq("#{@merchant.name}")
-      expect(body[:data].first[:attributes][:revenue]).to eq(merchant_revenue)
+      expect(body[:data].first[:type]).to eq("merchant_revenue")
+      expect(body[:data].first[:attributes][:revenue]).to eq(merchant.revenue)
     end
-
-
   end
 
   context 'revenue merchants most revenue' do
     it 'happy path: returns all merchants with most revenue' do
+      merchant = Merchant.merchant_revenue(@merchant.id).first
 
       get "/api/v1/revenue/merchants"
 
-      body = JSON.parse(response.body, symbolizes_names: true)
-      require 'pry'; binding.pry
+      body = JSON.parse(response.body, symbolize_names: true)
 
-      expect()
-
+      expect(body[:data].first[:id]).to eq("#{@merchant.id}")
+      expect(body[:data].first[:type]).to eq("merchant_name_revenue")
+      expect(body[:data].first[:attributes][:revenue]).to eq(merchant.revenue)
+      expect(body[:data].first[:attributes][:name]).to eq("#{@merchant.name}")
     end
+  end
+
+  context 'revenue itesm rank most revenue' do
   end
 end

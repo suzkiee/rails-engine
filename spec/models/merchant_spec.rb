@@ -42,22 +42,24 @@ RSpec.describe Merchant, type: :model do
         first = Merchant.most_revenue.first
         last = Merchant.most_revenue.last
 
+        first_revenue = Merchant.merchant_revenue(merchant_2.id).first
+        last_revenue = Merchant.merchant_revenue(merchant_1.id).first
+
         expect(first.id).to eq(merchant_2.id)
         expect(first.name).to eq(merchant_2.name)
-        expect(first.revenue).to eq(merchant_2.revenue)
-        
+        expect(first.revenue).to eq(first_revenue.revenue)
         expect(last.id).to eq(merchant_1.id)
         expect(last.name).to eq(merchant_1.name)
-        expect(last.revenue).to eq(merchant_1.revenue)
+        expect(last.revenue).to eq(last_revenue.revenue)
       end
     end
 
     describe '::search' do
       it 'returns one merchant based on search query' do
-        merchants = create_list(:mock_merchant, 25)
+        merchants = create_list(:mock_merchant, 5)
         merchant = create(:mock_merchant, name: "Turing")
-
-        expect(Merchant.search("ring")).to eq(merchant)
+        
+        expect(Merchant.search("ring").first).to eq(merchant)
       end
     end
   end
@@ -86,8 +88,8 @@ RSpec.describe Merchant, type: :model do
         transaction_1 = create(:mock_transaction, invoice: invoice_1, result: 'success')
         transaction_2 = create(:mock_transaction, invoice: invoice_2, result: 'success')
         transaction_3 = create(:mock_transaction, invoice: invoice_3, result: 'success')
-        
-        expect(merchant.revenue).to eq(380031.43)
+
+        expect(Merchant.merchant_revenue(merchant.id).first.revenue).to eq(3420282.869999999)
       end
     end
   end
