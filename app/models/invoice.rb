@@ -8,10 +8,11 @@ class Invoice < ApplicationRecord
   has_many :transactions, dependent: :destroy
   has_many :merchants, through: :items
 
-  def self.potential_revenue
+  def self.potential_revenue(quantity = 10)
     joins(:invoice_items)
-    .select("invoices.id as id, sum(invoice_items.quantity * invoice_items.unit_price) as revenue")
+    .select("invoices.id as id, sum(invoice_items.quantity * invoice_items.unit_price) as potential_revenue")
     .where.not(status: 'shipped')
     .group(:id)
+    .limit(quantity)
   end
 end
