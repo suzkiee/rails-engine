@@ -117,11 +117,8 @@ RSpec.describe "Revenue API" do
 
       expect(body[:data].first[:id]).to eq("#{@merchant.id}")
       expect(body[:data].first[:type]).to eq("merchant_name_revenue")
-      expect(body[:data].first[:attributes][:revenue]).to eq(merchant.revenue)
+      expect(body[:data].first[:attributes][:revenue]).to eq(395031.43)
       expect(body[:data].first[:attributes][:name]).to eq("#{@merchant.name}")
     end
-  end
-
-  context 'revenue itesm rank most revenue' do
   end
 end

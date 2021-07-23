@@ -61,7 +61,7 @@ RSpec.describe Invoice do
         first = Invoice.potential_revenue.first
 
         expect(first.id).to eq(invoice_1.id)
-        expect(first.potential_revenue).to eq(1800.0)
+        expect(first.potential_revenue).to eq(18000.0)
       end
     end
   end
